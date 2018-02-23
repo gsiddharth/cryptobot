@@ -2,12 +2,19 @@ import arbitrage
 from telegram.ext import Updater, CommandHandler
 import time
 
+red='\033[01;31m'
+green="\033[01;32m"
+yellow="\033[01;33m"
+white="\033[01;37m"
+cyan="\033[01;36m"
+
 class Monitor:
 
     def __init__(self, params, default_threshold):        
         self.params = params
         self.default_threshold = default_threshold
         self.user_thresholds = {}
+        self.last_published = {}
     
     def arb(self, bot, update, args):
         try:
@@ -17,7 +24,7 @@ class Monitor:
                 threshold = float(args[0])
 
             user = update.message.from_user   
-            self.user_thresholds[user.id] = threshold
+            self.user_thresholds[user.id] = threshold            
 
             print("Publishing arbitrage updates to " + str(user.id) + " with threshold > " + str(threshold))
             update.message.reply_text("Publishing arbitrage updates with threshold > " + str(threshold))
@@ -30,14 +37,28 @@ class Monitor:
             for user_id, threshold in self.user_thresholds.items():                                
                 arbs = {}
                 txt = ""
+                
+                published = ""
+            
                 for k, val in self.params.items():                
                     arb = arbitrage.arbitrage(val[0], val[1], val[2], val[3], val[4])
                     if(arb[0] > threshold or arb[1] > threshold):
                         arbs[k] =  arb
-                        txt += k + "\t\t\t" + str(arb[0]) + "\t\t\t" + str(arb[1]) + "\n"
-                        
-                if(txt != ""):
-                    bot.sendMessage(chat_id = user_id, text = txt)
+                        if(arb[0] > threshold):
+                            txt += k + "\t\t\t\t<b>" + str(arb[0]) + "</b>\t\t\t\t" + str(arb[1]) + "\n"
+                        if(arb[1] > threshold):
+                            txt += k + "\t\t\t\t" + str(arb[0]) + "\t\t\t\t<b>" + str(arb[1]) + "</b>\n"
+
+                        published += k + ":"
+
+                if(txt != ""):                    
+                    if(user_id not in self.last_published or self.last_published[user_id] != published):
+                        bot.sendMessage(chat_id = user_id, text = txt, parse_mode = "html")
+                        self.last_published[user_id] = published
+                else:                    
+                    if(user_id not in self.last_published or self.last_published[user_id] != published):                        
+                        bot.sendMessage(chat_id = user_id, text = "No arbitrage")
+                        self.last_published[user_id] = published
 
         except Exception as E:
             print(E)        
