@@ -3,7 +3,7 @@ from telegram.ext import Updater, CommandHandler
 import time
 import logging
 
-logging.basicConfig(level=logging.INFO, filename='crypto.log',
+logging.basicConfig(level=logging.CRITICAL, filename='crypto.log',
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 
@@ -62,6 +62,22 @@ class Monitor:
         except Exception as E:
             logger.error(E)     
 
+    def error_callback(self, bot, update, error):
+        try:
+            raise error
+        except Unauthorized:
+            pass
+        except BadRequest:
+            pass
+        except TimedOut:
+            pass
+        except NetworkError:
+            pass
+        except ChatMigrated as e:
+            pass
+        except TelegramError:
+            pass
+
     def stop(self, bot, update):
         try:
             user_id = update.message.from_user.id
@@ -90,6 +106,7 @@ updater = Updater('517487463:AAHQc1nko2re_n0Qww-fSKoIN_aHerCbTwQ')
 
 updater.dispatcher.add_handler(CommandHandler('arb', monitor.arb, pass_args=True))
 updater.dispatcher.add_handler(CommandHandler('stop', monitor.stop))
+updater.dispatcher.add_error_handler(monitor.error_callback)
 
 j = updater.job_queue
 job_minute = j.run_repeating(monitor.monitor, 30, 0)
