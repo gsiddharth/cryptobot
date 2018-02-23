@@ -4,8 +4,8 @@ import time
 import logging
 from telegram.error import (TelegramError, Unauthorized, BadRequest, 
                             TimedOut, ChatMigrated, NetworkError)
-                            
-logging.basicConfig(level=logging.CRITICAL, filename='crypto.log',
+
+logging.basicConfig(level=logging.INFO, filename='crypto.log',
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 
