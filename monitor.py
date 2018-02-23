@@ -8,6 +8,7 @@ from telegram.error import (TelegramError, Unauthorized, BadRequest,
 logging.basicConfig(level=logging.INFO, filename='crypto.log',
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 class Monitor:
 
