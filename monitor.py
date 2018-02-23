@@ -1,12 +1,11 @@
 import arbitrage
 from telegram.ext import Updater, CommandHandler
 import time
+import logging
 
-red='\033[01;31m'
-green="\033[01;32m"
-yellow="\033[01;33m"
-white="\033[01;37m"
-cyan="\033[01;36m"
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 class Monitor:
 
