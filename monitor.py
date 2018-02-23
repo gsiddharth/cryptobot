@@ -3,7 +3,7 @@ from telegram.ext import Updater, CommandHandler
 import time
 import logging
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.INFO, filename='crypto.log',
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 
