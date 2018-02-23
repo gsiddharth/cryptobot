@@ -25,11 +25,11 @@ class Monitor:
             user = update.message.from_user   
             self.user_thresholds[user.id] = threshold            
 
-            print("Publishing arbitrage updates to " + str(user.id) + " with threshold > " + str(threshold))
+            logger.info("Publishing arbitrage updates to " + str(user.id) + " with threshold > " + str(threshold))
             update.message.reply_text("Publishing arbitrage updates with threshold > " + str(threshold))
 
         except Exception as E:
-            print(E)
+            logger.error(E)
 
     def monitor(self, bot, update):
         try:
@@ -60,7 +60,7 @@ class Monitor:
                         self.last_published[user_id] = published
 
         except Exception as E:
-            print(E)        
+            logger.error(E)     
 
     def stop(self, bot, update):
         try:
@@ -70,10 +70,10 @@ class Monitor:
                 del self.user_thresholds[user_id]
                 
             update.message.reply_text("Stopped arbitrage updates")
-            print("Stopped arbitrage updates to " + str(user_id))
+            logger.info("Stopped arbitrage updates to " + str(user_id))
 
         except Exception as E:
-            print(E)
+            logger.error(E)
         
 
 param_list = {"BCHETH" : ["koinex", "bitfinex", "BCH", "ETH", "BCHETH"],
